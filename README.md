@@ -82,7 +82,7 @@ The project follows the **Model-View-Controller (MVC)** architecture:
 
 ## Video Demonstration
 
-[![Watch the Video](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://drive.google.com/file/d/1-U62BpfIovZoIIgEQvImaFLGwSX0NGMu/view?usp=sharing)
+[![Watch the Video]((https://drive.google.com/file/d/1-U62BpfIovZoIIgEQvImaFLGwSX0NGMu/view?usp=sharing)]
 
 [Click here to watch the video](https://drive.google.com/file/d/1-U62BpfIovZoIIgEQvImaFLGwSX0NGMu/view?usp=sharing)
 
