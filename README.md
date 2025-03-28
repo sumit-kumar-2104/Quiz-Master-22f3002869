@@ -81,5 +81,5 @@ The project follows the **Model-View-Controller (MVC)** architecture:
 
 
 ---
-This `README.md` provides an overview of Quiz Master - V1, covering its functionality, database schema, and implementation details. Let me know if any modifications are needed!
+This `README.md` provides an overview of Quiz Master - V1, covering its functionality, database schema, and implementation details.
 
