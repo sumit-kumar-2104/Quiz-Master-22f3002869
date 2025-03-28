@@ -80,6 +80,13 @@ The project follows the **Model-View-Controller (MVC)** architecture:
 - Summary charts displaying quiz performance and statistics.
 
 
+## Video Demonstration
+
+[![Watch the Video](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://drive.google.com/file/d/1-U62BpfIovZoIIgEQvImaFLGwSX0NGMu/view?usp=sharing)
+
+[Click here to watch the video](https://drive.google.com/file/d/1-U62BpfIovZoIIgEQvImaFLGwSX0NGMu/view?usp=sharing)
+
+
 ---
 This `README.md` provides an overview of Quiz Master - V1, covering its functionality, database schema, and implementation details.
 
