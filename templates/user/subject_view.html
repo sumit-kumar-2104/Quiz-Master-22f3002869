@@ -1,0 +1,17 @@
+{% extends "dashboard/basedashboard.html" %}
+
+{% block content %}
+<h2>{{ subject.name }}</h2>
+
+{% if chapters %}
+    <ul>
+        {% for chapter in chapters %}
+            <li><a href="{{ url_for('user.chapter_view', chapter_id=chapter.id) }}">{{ chapter.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No chapters found for this subject.</p>
+{% endif %}
+
+<a href="{{ url_for('user.user_dashboard') }}">Back to Dashboard</a>
+{% endblock %}

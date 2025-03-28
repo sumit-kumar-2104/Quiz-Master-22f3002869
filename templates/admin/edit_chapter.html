@@ -1,0 +1,35 @@
+{% extends "dashboard/basedashboard.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h3>Edit Chapter</h3>
+    <form method="POST">
+        <!-- Chapter Name -->
+        <div class="mb-3">
+            <label for="name" class="form-label">Chapter Name:</label>
+            <input type="text" id="name" name="name" class="form-control" value="{{ chapter.name }}" required>
+        </div>
+
+        <!-- Chapter Description -->
+        <div class="mb-3">
+            <label for="description" class="form-label">Description:</label>
+            <textarea id="description" name="description" class="form-control">{{ chapter.description }}</textarea>
+        </div>
+
+        <!-- Select Subject -->
+        <div class="mb-3">
+            <label for="subject_id" class="form-label">Select Subject:</label>
+            <select id="subject_id" name="subject_id" class="form-select">
+                {% for subject in subjects %}
+                    <option value="{{ subject.id }}" {% if subject.id == chapter.subject_id %}selected{% endif %}>
+                        {{ subject.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

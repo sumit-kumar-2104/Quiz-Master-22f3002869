@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Admin Login
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-4 bg_80">
+    <div class="col-sm-6 rounded-5 border border-dark bg_linear">
+      <nav class="navbar navbar-expand-sm">
+        <div class="ms-auto p-1">
+          <a class="btn btn-danger float-right" href="/login/user">User Login</a>
+        </div>
+      </nav>
+
+      <div class='text-center mb-3 text-white'>
+        <h3>Admin Login</h3>
+      </div>
+      <form action="/login/admin" method="POST" class="ps-4 pe-4">
+        <div class="form-floating mb-3 mt-3">
+          <input type="text" class="form-control" id="admin_username" placeholder="Enter Username" name="username" required>
+          <label for="admin_username">Username</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control" id="admin_password" placeholder="Enter Password" name="password" required>
+          <label for="admin_password">Password</label>
+        </div>
+
+        <div class='text-center m-3'>
+          <input type="submit" value="Login" class="btn btn-primary mt-3 justify-content-center">
+        </div> 
+      </form>
+    </div>
+</div>
+
+{% endblock %}

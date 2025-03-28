@@ -1,0 +1,33 @@
+{% extends "dashboard/basedashboard.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center text-primary">➕ Add Chapter</h1>
+
+    <div class="card shadow-lg p-4 bg-white rounded">
+        <form method="POST" action="{{ url_for('add_chapter') }}">
+            <div class="mb-3 text-dark">
+                <label for="name" class="form-label">Chapter Name:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+            <div class="mb-3 text-dark">
+                <label for="description" class="form-label">Description:</label>
+                <textarea id="description" name="description" class="form-control" required></textarea>
+            </div>
+            
+
+            <div class="mb-3 text-dark">
+                <label for="subject_id" class="form-label">Select Subject:</label>
+                <select id="subject_id" name="subject_id" class="form-control" required>
+                    {% for subject in subjects %}
+                        <option value="{{ subject.id }}">{{ subject.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">✅ Add Chapter</button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">⬅️ Back to Dashboard</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

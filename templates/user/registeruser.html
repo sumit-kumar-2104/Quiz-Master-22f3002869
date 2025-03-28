@@ -1,0 +1,95 @@
+{% extends 'layout.html' %}
+
+{% block title %} Register Users {% endblock %}
+
+{% block head %} 
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-sm-6 bg-light border border-dark rounded p-5">
+    <div class='text-center'>
+      <h2>User Registration</h2>
+    </div>
+    <br>
+    <form action="/register/user" method="POST" onsubmit="return validateForm()">
+
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="username" placeholder="User Name" name="username" required pattern="^\S+$" title="Username should not contain spaces">
+        <label for="username">Enter Username</label>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="password" placeholder="Password" name="password" required
+               pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+               title="Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.">
+        <label for="password">Password</label>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input type="email" class="form-control" id="email" name="email" required
+          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+          title="Please enter a valid email address (e.g., user@example.com)">
+        <label for="email">Email</label>
+      </div>
+      
+
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="full_name" placeholder="Full Name" name="full_name" required>
+        <label for="full_name">Full Name</label>
+      </div>
+
+      <div class="form-floating mb-3">
+        <select class="form-control" id="qualification" name="qualification" required>
+          <option value="" disabled selected>Select Qualification</option>
+          <option value="Primary">Primary</option>
+          <option value="Higher">Higher</option>
+          <option value="Bachelors">Bachelors</option>
+        </select>
+        <label for="qualification">Qualification</label>
+      </div>
+
+      <div class="form-floating mb-3">
+        <input type="date" class="form-control" id="dob" placeholder="Date of Birth" name="dob" required>
+        <label for="dob">DOB</label>
+      </div>
+
+      <!-- <div class="form-floating mb-3">
+        <select class="form-control" id="role" name="role" required>
+          <option value="" disabled selected>Select Role</option>
+          <option value="Student">Student</option>
+          <option value="Teacher">Teacher</option>
+        </select>
+        <label for="role">Role</label>
+      </div> -->
+
+      <div class='text-center m-3'>
+        <input type="submit" class="btn btn-outline-dark mt-3 justify-content-center">
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class='text-center'>
+  <h6>Already have an account? <span class="badge text-bg-dark"><a href='/login/user'>Login</a></span></h6>
+</div>
+
+<script>
+  function validateForm() {
+    let dob = document.getElementById('dob').value;
+    let dobDate = new Date(dob);
+    let minYear = 1900;
+    let currentYear = new Date().getFullYear();
+    
+    if (dobDate.getFullYear() < minYear || dobDate.getFullYear() > currentYear) {
+      alert("Please enter a valid Date of Birth (after 1900 and not in the future).");
+      return false;
+    }
+
+    return true;
+  }
+</script>
+
+{% endblock %}

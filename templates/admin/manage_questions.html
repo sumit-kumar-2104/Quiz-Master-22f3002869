@@ -1,0 +1,86 @@
+{% extends "dashboard/basedashboard.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center text-primary">Manage Questions for "{{ quiz.subject.name }} - {{ quiz.chapter.name }}"</h1>
+
+    <!-- Add New Question -->
+    <div class="card shadow p-3 mb-4 bg-white rounded">
+        <div class="card-header bg-success text-white">
+            <h2>➕ Add New Question</h2>
+        </div>
+        <div class="card-body text-dark">
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Question</label>
+                    <input type="text" name="question_statement" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Option 1</label>
+                    <input type="text" name="option1" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Option 2</label>
+                    <input type="text" name="option2" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Option 3</label>
+                    <input type="text" name="option3" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Option 4</label>
+                    <input type="text" name="option4" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Correct Option (1-4)</label>
+                    <input type="number" name="correct_option" class="form-control" min="1" max="4" required>
+                </div>
+                <button type="submit" class="btn btn-success">Add Question</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Existing Questions -->
+    <div class="card shadow p-3 mb-4 bg-white rounded">
+        <div class="card-header bg-primary text-white">
+            <h2>📋 Existing Questions</h2>
+        </div>
+        <div class="card-body">
+            {% if questions %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Options</th>
+                            <th>Correct Answer</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for question in questions %}
+                            <tr>
+                                <td>{{ question.question_statement }}</td>
+                                <td>
+                                    1️⃣ {{ question.option1 }}<br>
+                                    2️⃣ {{ question.option2 }}<br>
+                                    3️⃣ {{ question.option3 }}<br>
+                                    4️⃣ {{ question.option4 }}
+                                </td>
+                                <td><strong>{{ question.correct_option }}</strong></td>
+                                <td>
+                                    <a href="{{ url_for('edit_question', question_id=question.id) }}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                                    <a href="{{ url_for('delete_question', question_id=question.id) }}" class="btn btn-danger btn-sm">❌ Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-muted">No questions added yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Back to Dashboard -->
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">⬅️ Back to Dashboard</a>
+</div>
+{% endblock %}

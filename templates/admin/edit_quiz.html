@@ -1,0 +1,81 @@
+{% extends "dashboard/basedashboard.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h3 class="text-center text-primary">✏️ Edit Quiz</h3>
+    <form method="POST">
+        <!-- Quiz Title -->
+        <div class="mb-3">
+            <label for="title" class="form-label">Quiz Title:</label>
+            <input type="text" id="title" name="title" class="form-control" value="{{ quiz.title }}" required>
+        </div>
+
+        <!-- Subject Selection -->
+        <div class="mb-3">
+            <label for="subject_id" class="form-label">Select Subject:</label>
+            <select id="subject_id" name="subject_id" class="form-select">
+                {% for subject in subjects %}
+                    <option value="{{ subject.id }}" {% if subject.id == quiz.subject_id %}selected{% endif %}>
+                        {{ subject.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Chapter Selection -->
+        <div class="mb-3">
+            <label for="chapter_id" class="form-label">Select Chapter:</label>
+            <select id="chapter_id" name="chapter_id" class="form-select">
+                {% for chapter in chapters %}
+                    <option value="{{ chapter.id }}" {% if chapter.id == quiz.chapter_id %}selected{% endif %}>
+                        {{ chapter.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Date of Quiz -->
+        <div class="mb-3">
+            <label for="date_of_quiz" class="form-label">Date of Quiz:</label>
+            <input type="date" id="date_of_quiz" name="date_of_quiz"
+                   value="{{ quiz.date_of_quiz.strftime('%Y-%m-%d') }}" required />
+        </div>
+
+        <!-- Time Duration -->
+        <div class="mb-3">
+            <label for="time_duration" class="form-label">Time Duration (MM:SS):</label>
+            <input type="text" id="time_duration" name="time_duration"
+                   value="{{ quiz.time_duration }}" placeholder="MM:SS" required pattern="\d{1,2}:\d{2}">
+        </div>
+
+        <!-- Remarks -->
+        <div class="mb-3">
+            <label for="remarks" class="form-label">Remarks:</label>
+            <textarea id="remarks" name="remarks" class="form-control"
+                      placeholder="Any remarks or instructions..." rows="4">{{ quiz.remarks }}</textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-success px-4">✅ Save Changes</button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary px-4">⬅️ Cancel</a>
+        </div>
+    </form>
+</div>
+
+<!-- Bootstrap Form Validation -->
+<script>
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}

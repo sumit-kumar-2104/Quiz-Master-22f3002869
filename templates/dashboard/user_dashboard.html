@@ -1,0 +1,278 @@
+{% extends "dashboard/basedashboard.html" %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+
+<script>
+    function confirmStartQuiz(quizId) {
+        let confirmAction = confirm("⚠️ You are about to start the quiz. Are you sure you want to proceed?");
+        if (confirmAction) {
+            window.location.href = "/start_quiz/" + quizId;
+        }
+    }
+</script>
+
+<div class="container-fluid">
+    <h2 class="mt-3">Welcome, {{ user.username if user else 'Guest' }}</h2>
+
+
+    <!-- Search Bar -->
+    <div class="card mt-3">
+        <div class="card-header bg-secondary text-white">
+            <i class="bi bi-search"></i> Search Subjects & Chapters & Quizzes
+        </div>
+        <div class="card-body">
+            <input type="text" id="search-input" class="form-control" placeholder="Search by subject or chapter or quiz name...">
+            <div id="search-results" class="mt-2"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('search-input').addEventListener('keyup', function () {
+            let query = this.value.trim();
+            if (query.length < 2) {
+                document.getElementById('search-results').innerHTML = '';
+                return;
+            }
+
+            fetch(`/search?q=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsContainer = document.getElementById('search-results');
+                    resultsContainer.innerHTML = '';
+
+                    if (data.subjects.length > 0) {
+                        let subjectsHTML = '<h5>Subjects</h5><ul class="list-group">';
+                        data.subjects.forEach(sub => {
+                            subjectsHTML += `<li class="list-group-item">
+                                <a href="/user/subject/${sub.id}">${sub.name}</a>
+                            </li>`;
+                        });
+                        subjectsHTML += '</ul>';
+                        resultsContainer.innerHTML += subjectsHTML;
+                    }
+
+                    if (data.chapters.length > 0) {
+                        let chaptersHTML = '<h5>Chapters</h5><ul class="list-group">';
+                        data.chapters.forEach(chap => {
+                            chaptersHTML += `<li class="list-group-item">
+                                <a href="/chapter/${chap.id}">${chap.name}</a>
+                            </li>`;
+                        });
+                        chaptersHTML += '</ul>';
+                        resultsContainer.innerHTML += chaptersHTML;
+                    }
+
+                    if (data.quizzes.length > 0) {  // ✅ Correct key from API response
+                        let quizzesHTML = '<h5>Quizzes</h5><ul class="list-group">';
+                        data.quizzes.forEach(quiz => {  // ✅ Correct loop variable
+                            quizzesHTML += `<li class="list-group-item">
+                                <a href="/start_quiz/${quiz.id}">${quiz.title}</a>  <!-- ✅ Correct key -->
+                            </li>`;
+                        });
+                        quizzesHTML += '</ul>';
+                        resultsContainer.innerHTML += quizzesHTML;
+                    }
+
+                    if (data.subjects.length === 0 && data.chapters.length === 0 && data.quizzes.length === 0) {
+                        resultsContainer.innerHTML = '<p class="text-muted">No results found.</p>';
+                    }
+                });
+        });
+    </script>
+    
+    <!-- Upcoming Quizzes -->
+    <!-- Upcoming Quizzes -->
+    <div class="card mt-3">
+        <div class="card-header bg-primary text-light">
+            <i class="bi bi-calendar-event"></i> Available Quizzes
+        </div>
+        <div class="card-body">
+            {% if upcoming_quizzes %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th style="width: 10%;">Quiz ID</th>
+                            <th style="width: 20%;">Title</th>
+                            <th style="width: 15%;">Chapter</th>
+                            <th style="width: 15%;">Scheduled Date</th>
+                            <th style="width: 10%;">Duration</th>
+                            <th style="width: 20%;">Remarks</th>
+                            <th style="width: 10%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for quiz in upcoming_quizzes %}
+                        <tr>
+                            <td>{{ quiz.id }}</td>
+                            <td><strong>{{ quiz.title }}</strong></td>
+                            <td>{{ quiz.chapter_name }}</td>
+                            <td>{{ quiz.date_of_quiz }}</td>
+                            <td>{{ quiz.time_duration }}</td>
+                            <td style="word-wrap: break-word; white-space: normal;">{{ quiz.remarks if quiz.remarks else 'N/A' }}</td>
+                            <td>
+                                <a href="javascript:void(0);" class="btn btn-sm btn-success" onclick="confirmStartQuiz('{{ quiz.id }}')">
+                                    <i class="bi bi-play-circle"></i> Start
+                                </a>                            
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted text-center">No upcoming quizzes.</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+
+    <!-- Subjects Section -->
+    <div class="card mt-3">
+        <div class="card-header bg-info text-white">
+            <i class="bi bi-journal-bookmark"></i> Subjects
+        </div>
+        <div class="card-body text-dark">
+            <div class="row">
+                {% for subject in subjects %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ subject.name }}</h5>
+                            <button class="btn btn-outline-success open-subject" data-subject-id="{{ subject.id }}">
+                                <i class="bi bi-folder"></i> Open
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+    
+
+
+    <!-- Chapters Section (Initially Hidden) -->
+    <div id="chapters-container" class="mt-3" style="display: none;">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <i class="bi bi-book"></i> Top Chapters
+            </div>
+            <div class="card-body">
+                <div class="row" id="chapters-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.open-subject').forEach(button => {
+            button.addEventListener('click', function() {
+                let subjectId = this.getAttribute('data-subject-id');
+                let chaptersContainer = document.getElementById('chapters-container');
+    
+                // If the clicked subject is already open, toggle it off
+                if (chaptersContainer.dataset.subjectId === subjectId) {
+                    chaptersContainer.style.display = (chaptersContainer.style.display === 'none' || chaptersContainer.style.display === '') ? 'block' : 'none';
+                    return;
+                }
+    
+                // Update dataset with new subject ID
+                chaptersContainer.dataset.subjectId = subjectId;
+                chaptersContainer.style.display = 'block'; // Show chapters
+    
+                fetch(`/get_chapters/${subjectId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        let chaptersList = document.getElementById('chapters-list');
+                        chaptersList.innerHTML = ''; // Clear previous data
+    
+                        if (data.chapters.length > 0) {
+                            data.chapters.forEach(chapter => {
+                                let chapterCard = `
+                                    <div class="col-md-3 mb-3 text-dark">
+                                        <div class="card h-100 shadow-sm chapter-card">
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title">${chapter.name}</h5>
+                                                <a href="/chapter/${chapter.id}" class="btn btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                                chaptersList.innerHTML += chapterCard;
+                            });
+                        } else {
+                            chaptersList.innerHTML = '<p class="text-muted text-center">No chapters available.</p>';
+                        }
+    
+                        // **Smoothly scroll down to the chapters section**
+                        setTimeout(() => {
+                            chaptersContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }, 300);
+                    });
+            });
+        });
+    </script>
+    
+        
+
+
+    
+    <!-- Quiz Scores -->
+    <div class="card mt-3">
+        <div class="card-header bg-success text-white">
+            <i class="bi bi-bar-chart-line"></i> Quiz Scores
+        </div>
+        <div class="card-body">
+            {% if quiz_scores %}
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Quiz ID</th>
+                        <th>Date</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score in quiz_scores %}
+                    <tr>
+                        <td>{{ score.quiz_id }}</td>
+                        <td><span class="badge bg-info">{{ score.date }}</span></td>
+                        <td>
+                            <span class="badge bg-info">
+                                {% if score.total_score != "Not Attempted" %}
+                                    {{ score.total_score }}%
+                                {% else %}
+                                    Not Attempted
+                                {% endif %}
+                            </span>
+                        </td>                                               
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted text-center">No quiz scores available.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+
+</div>
+
+
+
+<style>
+    .chapter-card:hover {
+        transform: scale(1.05);
+        transition: 0.3s;
+    }
+</style>
+
+{% endblock %}

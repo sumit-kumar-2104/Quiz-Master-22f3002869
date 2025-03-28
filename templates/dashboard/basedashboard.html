@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% block head %}
+  <title>{% block title %}{% endblock %} | Quiz Master</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/static/css/dataTables.bootstrap5.min.css"/>
+  <link rel="stylesheet" href="/static/css/dashboardstyle.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  
+  <script src="/static/js/jquery-3.7.1.js"></script>
+  <script src="/static/js/jquery.dataTables.min.js"></script>
+  <script src="/static/js/dataTables.bootstrap5.min.js"></script>
+  <script src="/static/js/script.js"></script>
+  <script src="/static/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.2/dist/chart.min.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+
+
+  {% endblock %}
+
+</head>
+
+  
+<body style="background-color: #13072e; color: white;">
+  
+  <!-- Top Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg_primary fixed-top" style="background-color: #004aad !important;">
+    <div class="container-fluid">
+      <!-- Sidebar toggle button -->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#sidebar"
+        aria-controls="sidebar"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Brand (Quiz Master) -->
+      <a class="navbar-brand ms-3 fw-bold text-light" href="#">Quiz Master</a>
+
+      <!-- Home Button -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link fw-bold text-light"
+             href="{% if current_user.is_authenticated and current_user.is_admin %}/admin/dashboard{% elif current_user.is_authenticated %}/user_dashboard{% else %}/{% endif %}">
+            Home
+          </a>
+        </li>
+      </ul>
+      
+
+      <!-- Navbar toggler for smaller screens -->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#topNavBar"
+        aria-controls="topNavBar"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Right-aligned user dropdown -->
+      <!-- User Dropdown -->
+      <div class="collapse navbar-collapse" id="topNavBar">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  {% if current_user.is_admin %}
+                      <span>Admin</span>
+                  {% elif current_user.is_authenticated %}
+                      <span>{{ current_user.username }}</span>
+                  {% else %}
+                      <span>Guest</span>
+                  {% endif %}
+                  <i class="bi bi-person-fill"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    {% if current_user.is_admin %}
+                        <li><a class="dropdown-item" href="{{ url_for('admin_logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                        <li><a class="dropdown-item" href="/profile">Change Password</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user.logout') }}">Logout</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+<!-- End Top Navigation Bar -->
+
+
+  <!-- Sidebar -->
+  <div class="offcanvas offcanvas-start sidebar bg_primary" tabindex="-1" id="sidebar" style="width: 50px;">
+    <div class="offcanvas-body p-0">
+      {% block sidebar %}
+      {% endblock %}
+    </div>
+  </div>
+  <!-- End Sidebar -->
+
+  <main class="mt-5 pt-3" style="margin-left: 50px; margin-right: 50px;">
+    <div class="container-fluid">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </main>
+
+  <!-- Footer -->
+<!-- Footer -->
+<footer style="
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    background-color: #13072e;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 12px;
+    margin: 0;
+    border-top: 2px solid #002d6b;">
+    &copy; 2025 Quiz Master | Developed by 22f3002869 (Sumit Kumar)
+</footer>
+
+
+  
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let dropdowns = document.querySelectorAll('.dropdown-toggle');
+        dropdowns.forEach(dropdown => {
+            new bootstrap.Dropdown(dropdown);
+        });
+    });
+    </script>
+    
+
+</body>
+</html>

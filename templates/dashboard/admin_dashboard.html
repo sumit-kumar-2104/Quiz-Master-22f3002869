@@ -1,0 +1,219 @@
+{% extends "dashboard/basedashboard.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center text-primary">Admin Dashboard</h1>
+
+    <!-- Search Bar with Category Selection -->
+    <form method="GET" action="{{ url_for('admin_dashboard') }}" class="mb-4">
+        <div class="input-group">
+            <select name="category" class="form-select">
+                <option value="">Search in...</option>
+                <option value="subject" {% if selected_category == 'subject' %}selected{% endif %}>Subjects</option>
+                <option value="chapter" {% if selected_category == 'chapter' %}selected{% endif %}>Chapters</option>
+                <option value="quiz" {% if selected_category == 'quiz' %}selected{% endif %}>Quizzes</option>
+                <option value="user" {% if selected_category == 'user' %}selected{% endif %}>Users</option>
+            </select>
+            <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ search_query }}">
+            <button type="submit" class="btn btn-primary">🔍 Search</button>
+        </div>
+    </form>
+
+    <!-- Search Results Section -->
+    {% if search_query %}
+        <h3>Search Results for "{{ search_query }}"</h3>
+
+        {% if selected_category == "subject" and subjects %}
+            <h4>📚 Subject</h4>
+            <ul class="list-group mb-3">
+                {% for subject in subjects %}
+                    <li class="list-group-item"><strong>{{ subject.name }}</strong></li>
+                {% endfor %}
+            </ul>
+
+            <!-- Related Chapters & Quizzes -->
+            {% if chapters %}
+                <h4>📖 Related Chapters</h4>
+                <ul class="list-group mb-3">
+                    {% for chapter in chapters %}
+                        <li class="list-group-item">{{ chapter.name }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if quizzes %}
+                <h4>📝 Related Quizzes</h4>
+                <ul class="list-group mb-3">
+                    {% for quiz in quizzes %}
+                        <li class="list-group-item">{{ quiz.title }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
+
+        {% if selected_category == "chapter" and chapters %}
+            <h4>📖 Chapter</h4>
+            <ul class="list-group mb-3">
+                {% for chapter in chapters %}
+                    <li class="list-group-item"><strong>{{ chapter.name }}</strong></li>
+                {% endfor %}
+            </ul>
+            
+            {% if quizzes %}
+                <h4>📝 Related Quizzes</h4>
+                <ul class="list-group mb-3">
+                    {% for quiz in quizzes %}
+                        <li class="list-group-item">{{ quiz.title }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
+
+        {% if selected_category == "quiz" and quizzes %}
+            <h4>📝 Quizzes</h4>
+            <ul class="list-group mb-3">
+                {% for quiz in quizzes %}
+                    <li class="list-group-item"><strong>{{ quiz.title }}</strong></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if selected_category == "user" and users %}
+            <h4>👤 Users</h4>
+            <ul class="list-group mb-3">
+                {% for user in users %}
+                    <li class="list-group-item"><strong>{{ user.username }}</strong> ({{ user.email }})</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if not (subjects or chapters or quizzes or users) %}
+            <p class="text-muted">No results found for "{{ search_query }}". Try a different search.</p>
+        {% endif %}
+    {% endif %}
+
+    <!-- Default Sections (Only if no search is performed) -->
+    {% if not search_query %}
+        <!-- Subjects Section -->
+        <div class="card shadow-lg p-3 mb-4 bg-white rounded">
+            <div class="card-header bg-primary text-white">
+                <h2>📚 Subjects</h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for subject in subjects %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ subject.name }}
+                            <div>
+                                <a href="{{ url_for('edit_subject', subject_id=subject.id) }}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                                <a href="#" onclick="confirmDelete('{{ url_for('delete_subject', subject_id=subject.id) }}')" class="btn btn-danger btn-sm">❌ Delete</a>
+                            </div>
+                        </li>
+                    {% else %}
+                        <p class="text-muted">No subjects found.</p>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('add_subject') }}" class="btn btn-success mt-3">➕ Add Subject</a>
+            </div>
+        </div>
+
+        <!-- Chapters Section -->
+        <div class="card shadow-lg p-3 mb-4 bg-white rounded">
+            <div class="card-header bg-secondary text-white">
+                <h2>📖 Chapters</h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for chapter in chapters %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ chapter.name }}</strong> ({{ chapter.subject.name if chapter.subject else 'No Subject' }})
+                            </div>
+                            <div>
+                                <a href="{{ url_for('edit_chapter', chapter_id=chapter.id) }}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                                <a href="#" onclick="confirmDelete('{{ url_for('delete_chapter', chapter_id=chapter.id) }}')" class="btn btn-danger btn-sm">❌ Delete</a>
+                            </div>
+                        </li>
+                    {% else %}
+                        <p class="text-muted">No chapters found.</p>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('add_chapter') }}" class="btn btn-success mt-3">➕ Add Chapter</a>
+            </div>
+        </div>
+
+        <!-- Quizzes Section -->
+        <div class="card shadow-lg p-3 mb-4 bg-white rounded">
+            <div class="card-header bg-warning text-dark">
+                <h2>📝 Quizzes</h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for quiz in quizzes %}
+                    <li class="list-group-item" style="white-space: normal; overflow-wrap: break-word; text-align: left;">
+                            <div>
+                                <strong>{{ quiz.title }}</strong> ({{ quiz.subject.name if quiz.subject else 'No Subject' }} - {{ quiz.chapter.name if quiz.chapter else 'No Chapter' }})
+                            </div>
+                            <div>
+                                <a href="{{ url_for('edit_quiz', quiz_id=quiz.id) }}" class="btn btn-warning btn-sm">✏️ Edit</a>
+                                <a href="{{ url_for('manage_questions', quiz_id=quiz.id) }}" class="btn btn-info btn-sm">📋 Manage Questions</a>
+                                <a href="#" onclick="confirmDelete('{{ url_for('delete_quiz', quiz_id=quiz.id) }}')" class="btn btn-danger btn-sm">❌ Delete</a>
+                            </div>
+                        </li>
+                    {% else %}
+                        <p class="text-muted">No quizzes found.</p>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('add_quiz') }}" class="btn btn-success mt-3">➕ Add Quiz</a>
+            </div>
+        </div>
+
+
+        <!-- Users Section -->
+        <div class="card shadow-lg p-3 mb-4 bg-white rounded">
+            <div class="card-header bg-success text-white">
+                <h2>👤 Users</h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for user in users %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ user.username }}</strong> - {{ user.email }}
+                                <br>📅 Joined: {{ user.date_created.strftime('%Y-%m-%d') }}
+                                <br>🏆 Total Attempts: {{ user.scores | length | default(0) }}
+                                <br>✅ Correct Answers: {{ user.scores | selectattr("is_correct", "equalto", True) | list | length | default(0) }}
+                            </div>
+                            <div>
+                                <a href="#" onclick="confirmDelete('{{ url_for('delete_user', user_id=user.id) }}')" class="btn btn-danger btn-sm">❌ Delete</a>
+                            </div>
+                        </li>
+                    {% else %}
+                        <p class="text-muted">No users found.</p>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    {% endif %}
+
+<script>
+    function confirmDelete(url) {
+        if (confirm("Are you sure you want to delete this item? This action cannot be undone!")) {
+            window.location.href = url;
+        }
+    }
+</script>
+
+
+
+    <a href="{{ url_for('admin_summary') }}" class="btn btn-info">View Summary</a>
+</div>
+
+<script>
+    function confirmDelete(url) {
+        if (confirm("Are you sure you want to delete this item? This action cannot be undone!")) {
+            window.location.href = url;
+        }
+    }
+</script>
+
+{% endblock %}

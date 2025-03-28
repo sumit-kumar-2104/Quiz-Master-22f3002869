@@ -1,0 +1,123 @@
+{% extends "dashboard/basedashboard.html" %}
+
+{% block content %}
+<h2 class="text-white">Admin Summary</h2>
+
+<div class="row" style="background-color: #f8f9fa; padding: 20px; border-radius: 10px;">
+    <!-- User Stats -->
+    <div class="col-md-6 text-dark">
+        <h4>Total Users: {{ total_users }}</h4>
+        <h4>Total Quizzes: {{ total_quizzes }}</h4>
+        <h4>Total Questions: {{ total_questions }}</h4>
+        <h4>Total Quiz Attempts: {{ total_attempts }}</h4>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">⬅️ Back to Dashboard</a>
+    </div>
+
+    <!-- Chart 1: User Registrations -->
+    <div class="col-md-6">
+        <div class="chart-container">
+            <canvas id="userRegistrationsChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 2: Subject-wise Quiz Distribution -->
+    <div class="col-md-6">
+        <div class="chart-container">
+            <canvas id="subjectDistributionChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 3: Correct Answers Ratio -->
+    <div class="col-md-6">
+        <div class="chart-container">
+            <canvas id="correctAnswersChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chart-container {
+        width: 100%;
+        height: 350px; /* Fixed height for consistency */
+        position: relative;
+        background-color: white; /* Ensuring charts have a white background */
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var userRegistrations = {{ user_registrations | tojson }};
+        var subjectCounts = {{ subject_counts | tojson }};
+        var correctAnswersRatio = {{ correct_answers_ratio | tojson }};
+
+        var userLabels = userRegistrations.map(item => item.month);
+        var userData = userRegistrations.map(item => item.count);
+
+        var subjectLabels = subjectCounts.map(item => item.subject);
+        var subjectData = subjectCounts.map(item => item.count);
+
+        var correctLabels = correctAnswersRatio.map(item => item.quiz);
+        var correctData = correctAnswersRatio.map(item => item.avg_correct);
+
+        function createChart(ctx, type, data, options) {
+            if (ctx) {
+                return new Chart(ctx, {
+                    type: type,
+                    data: data,
+                    options: options
+                });
+            }
+            console.error("Chart context not found!");
+        }
+
+        // User Registrations Chart
+        var ctx1 = document.getElementById("userRegistrationsChart").getContext("2d");
+        var userRegistrationsChart = createChart(ctx1, "bar", {
+            labels: userLabels,
+            datasets: [{
+                label: "User Registrations per Month",
+                data: userData,
+                backgroundColor: "rgba(54, 162, 235, 0.6)",
+            }]
+        }, {
+            responsive: true,
+            maintainAspectRatio: false
+        });
+
+        // Subject-wise Quiz Distribution Chart (Pie Chart)
+        var ctx2 = document.getElementById("subjectDistributionChart").getContext("2d");
+        var subjectDistributionChart = createChart(ctx2, "pie", {
+            labels: subjectLabels,
+            datasets: [{
+                data: subjectData,
+                backgroundColor: ["#ff6384", "#36a2eb", "#ffcd56", "#4bc0c0", "#9966ff"],
+            }]
+        }, {
+            responsive: true,
+            maintainAspectRatio: false
+        });
+
+        // Correct Answers Ratio Chart (Bar Chart)
+        var ctx3 = document.getElementById("correctAnswersChart").getContext("2d");
+        var correctAnswersChart = createChart(ctx3, "bar", {
+            labels: correctLabels,
+            datasets: [{
+                label: "Average Correct Answers",
+                data: correctData,
+                backgroundColor: "rgba(75, 192, 192, 0.6)",
+            }]
+        }, {
+            responsive: true,
+            maintainAspectRatio: false
+        });
+    });
+</script>
+{% endblock %}

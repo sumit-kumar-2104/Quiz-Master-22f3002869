@@ -1,0 +1,10 @@
+Flask==2.0.3
+Flask-SQLAlchemy==2.5.1
+Flask-Migrate==3.1.0
+flask
+flask_sqlalchemy
+flask_login
+flask_restful
+
+
+ #To Run the project go to app.py and run the file.

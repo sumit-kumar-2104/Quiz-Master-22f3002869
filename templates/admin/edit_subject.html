@@ -1,0 +1,18 @@
+{% extends "dashboard/basedashboard.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h3>Edit Subject</h3>
+    <form method="POST">
+        <div class="mb-3">
+            <label for="name" class="form-label">Subject Name</label>
+            <input type="text" id="name" name="name" class="form-control" value="{{ subject.name }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="4">{{ subject.description }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

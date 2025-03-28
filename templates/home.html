@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<div class="p-5">
+    <h1 class="text-center text-white">Welcome to Quiz Master</h1>
+</div>
+
+<!-- Subjects Section -->
+<div class="main_container text-white">
+    <div class="quiz_content bg_linear">
+        <div class="quiz_img">
+            <img src="/static/images/subjects.jpeg" alt=""><br><br>
+        </div>
+        <div>
+            <h2>Subjects</h2><br>
+            <p>Explore a variety of subjects to enhance your knowledge.</p>
+            <p>Organized for easy navigation and preparation.</p>
+            <p>Track progress and take quizzes to test your learning.</p>
+        </div>
+    </div>
+</div><br><br>
+
+<!-- Chapters Section -->
+<div class="main_container text-white">
+    <div class="quiz_content bg_linear flex_reverse">
+        <div>
+            <h2>Chapters</h2><br>
+            <p>Dive deeper into topics with well-structured chapters.</p>
+            <p>Study efficiently with curated materials and practice quizzes.</p>
+            <p>Monitor your chapter-wise performance to improve consistently.</p>
+        </div>
+        <div class="quiz_img">
+            <img src="/static/images/chapters.jpg" alt=""><br><br>
+        </div>
+    </div>
+</div><br><br>
+
+<!-- Quizzes Section -->
+<div class="main_container text-white">
+    <div class="quiz_content bg_linear">
+        <div class="quiz_img">
+            <img src="/static/images/quizzes.jpeg" alt=""><br><br>
+        </div>
+        <div>
+            <h2>Quizzes</h2><br>
+            <p>Test your knowledge with interactive quizzes.</p>
+            <p>Improve through instant feedback and detailed explanations.</p>
+            <p>Compete with others and climb the leaderboard.</p>
+        </div>
+    </div>
+</div><br><br>
+
+
+<br><h2 class="text-center text-white">User Insights</h2><br><br>
+
+<div style="display:none;" {% if users %}>
+    <h3>User Details</h3>
+    <table class='table text-white'>
+        <tr>
+            <th>Name</th>
+            <th>User ID</th>
+            <th>Email</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.user_id }}</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+</div>
+
+{% endblock %}

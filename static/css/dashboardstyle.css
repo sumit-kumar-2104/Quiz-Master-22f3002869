@@ -1,0 +1,105 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+
+body, button {
+  font-family: "Inter", sans-serif;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #343a40;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  z-index: 1030; /* Ensure it stays above the sidebar */
+}
+
+main {
+  margin-bottom: 56px; /* To prevent content from overlapping the footer */
+}
+
+
+:root {
+  --offcanvas-width: 270px;
+  --topNavbarHeight: 56px;
+}
+
+.sidebar-nav {
+  width: var(--offcanvas-width);
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-link .right-icon {
+  display: inline-flex;
+}
+
+.sidebar-link[aria-expanded="true"] .right-icon {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 991.98px) {
+  main {
+    margin-left: 0; /* Remove margin when sidebar is collapsed */
+  }
+}
+
+@media (min-width: 992px) {
+  body {
+    overflow: auto !important;
+  }
+
+  .sidebar-collapsed main {
+    margin-left: 0; /* Ensure content shifts when sidebar is collapsed */
+  }
+
+  main {
+    margin-left: var(--offcanvas-width);
+  }
+
+  footer {
+    margin-left: var(--offcanvas-width);
+    width: calc(100% - var(--offcanvas-width));
+  }
+
+  /* this is to remove the backdrop */
+  .offcanvas-backdrop::before {
+    display: none;
+  }
+
+  .sidebar-nav {
+    -webkit-transform: none;
+    transform: none;
+    visibility: visible !important;
+    height: calc(100% - var(--topNavbarHeight));
+    top: var(--topNavbarHeight);
+  }
+}
+
+/* Styling for subject cards */
+.subject-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  background: #f8f9fa;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.subject-card h5 {
+  font-weight: 600;
+}
+
+.subject-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.subject-card .btn {
+  margin-top: 10px;
+}

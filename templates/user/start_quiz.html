@@ -1,0 +1,76 @@
+{% extends "dashboard/basedashboard.html" %}
+
+{% block title %}Start Quiz{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white text-center">
+            <h3>{{ quiz.title }}</h3>
+            <p>Time Remaining: <span id="timer">{{ quiz.time_duration }}</span></p>
+        </div>        
+        <div class="card-body text-dark">
+            <form id="quizForm" action="{{ url_for('user.submit_quiz', quiz_id=quiz.id) }}" method="POST">
+                {% for question in questions %}
+                <div class="mb-4">
+                    <h5>{{ loop.index }}. {{ question.question_statement }}</h5>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" name="q{{ question.id }}" value="1">
+                        <label class="form-check-label">{{ question.option1 }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" name="q{{ question.id }}" value="2">
+                        <label class="form-check-label">{{ question.option2 }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" name="q{{ question.id }}" value="3">
+                        <label class="form-check-label">{{ question.option3 }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" name="q{{ question.id }}" value="4">
+                        <label class="form-check-label">{{ question.option4 }}</label>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <button type="submit" id="submitBtn" class="btn btn-success w-100">Submit Quiz</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let timeStr = "{{ quiz.time_duration }}";
+    let totalTime;
+
+    if (timeStr.includes(":")) {
+        let timeParts = timeStr.split(":");
+        let minutes = parseInt(timeParts[0], 10) || 0;
+        let seconds = parseInt(timeParts[1], 10) || 0;
+        totalTime = minutes * 60 + seconds;
+    } else {
+        totalTime = parseInt(timeStr, 10) * 60; // If duration is given in minutes
+    }
+
+    function updateTimer() {
+        if (totalTime <= 0) {
+            alert("Time's up! You will be redirected.");
+            window.location.href = "http://192.168.1.35:8080/chapter/1";
+            return;
+        }
+
+        let displayMinutes = Math.floor(totalTime / 60);
+        let displaySeconds = totalTime % 60;
+        document.getElementById("timer").innerText = `${displayMinutes}:${displaySeconds < 10 ? '0' : ''}${displaySeconds}`;
+        totalTime--;
+
+        setTimeout(updateTimer, 1000);
+    }
+
+    document.getElementById("quizForm").addEventListener("submit", function () {
+        document.getElementById("submitBtn").disabled = true;
+    });
+
+    updateTimer();
+</script>
+{% endblock %}
